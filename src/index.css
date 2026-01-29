@@ -114,3 +114,92 @@ html, body, #root {
   text-align: center;
   line-height: 50px;
 }
+
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
+
+/* Modal card */
+.modal-card {
+  width: 360px;
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  animation: popup 0.3s ease;
+}
+
+.modal-card h2 {
+  margin-bottom: 20px;
+}
+
+.modal-card input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: #0d6efd;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.close-btn {
+  margin-top: 12px;
+  cursor: pointer;
+  color: red;
+  font-size: 14px;
+}
+
+@keyframes popup {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid white;
+  border-top: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-text {
+  color: red;
+  font-size: 13px;
+  margin-bottom: 10px;
+}

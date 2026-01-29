@@ -1,4 +1,5 @@
-function Navbar() {
+function Navbar({ onSignupClick, onLoginClick }) {
+
   return (
     <nav className="navbar">
       <div className="navbar-left">
@@ -6,8 +7,9 @@ function Navbar() {
       </div>
 
       <div className="navbar-right">
-        <button className="btn login-btn">Login</button>
-        <button className="btn signup-btn">Signup</button>
+        <button className="btn login-btn" onClick={onLoginClick}>Login</button>
+        <button className="btn signup-btn" onClick={onSignupClick}>Signup</button>
+
       </div>
     </nav>
   )
