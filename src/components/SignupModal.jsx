@@ -2,20 +2,19 @@ import { useEffect } from "react"
 import { useState } from "react"
 
 function SignupModal({ onClose }) {
-    useEffect(() => {
-  const handleEsc = (e) => {
-    if (e.key === "Escape") onClose()
-  }
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === "Escape") onClose()
+    }
+    window.addEventListener("keydown", handleEsc)
+    return () => window.removeEventListener("keydown", handleEsc)}, [])
 
-  window.addEventListener("keydown", handleEsc)
-  return () => window.removeEventListener("keydown", handleEsc)
-}, [])
-const [name, setName] = useState("")
-const [email, setEmail] = useState("")
-const [password, setPassword] = useState("")
-const [error, setError] = useState("")
-const [loading, setLoading] = useState(false)
-const handleSignup = () => {
+  const handleSignup = async () => {
   if (!name || !email || !password) {
     setError("All fields are required")
     return
@@ -29,11 +28,36 @@ const handleSignup = () => {
   setError("")
   setLoading(true)
 
-  setTimeout(() => {
-    setLoading(false)
-    alert("Signup successful (API will be added later)")
+  try {
+    const response = await fetch(
+      "http://localhost:8080/api/signup",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+      }
+    )
+
+    const data = await response.json().catch(() => null)
+
+    if (!response.ok) {
+      throw new Error(data?.error || "Signup failed")
+    }
+
+    alert("Signup successful 🎉")
     onClose()
-  }, 1500)
+
+  } catch (err) {
+    setError(err.message)
+  } finally {
+    setLoading(false)
+  }
 }
 
   return (
@@ -47,8 +71,8 @@ const handleSignup = () => {
 
         {error && <p className="error-text">{error}</p>}
         <button className="auth-btn" onClick={handleSignup} disabled={loading}>
-  {loading ? <div className="spinner"></div> : "Signup"}
-</button>
+          {loading ? <div className="spinner"></div> : "Signup"}
+        </button>
         <p className="close-btn" onClick={onClose}>✖ Close</p>
       </div>
     </div>
