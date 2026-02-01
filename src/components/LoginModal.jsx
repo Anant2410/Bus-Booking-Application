@@ -1,10 +1,17 @@
 import { useEffect } from "react"
 import { useState } from "react"
+import { useContext } from "react"
+import { AuthContext } from "../context/AuthContext"
+import { useNavigate } from "react-router-dom"
+
 function LoginModal({ onClose }) {
     const [email, setEmail] = useState("")
-const [password, setPassword] = useState("")
-const [error, setError] = useState("")
-const [loading, setLoading] = useState(false)
+    const [password, setPassword] = useState("")
+    const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false)
+    const { setIsAuthenticated } = useContext(AuthContext)
+    const navigate = useNavigate()
+
     useEffect(() => {
   const handleEsc = (e) => {
     if (e.key === "Escape") onClose()
@@ -12,9 +19,9 @@ const [loading, setLoading] = useState(false)
 
   window.addEventListener("keydown", handleEsc)
   return () => window.removeEventListener("keydown", handleEsc)
-}, [])
+}, [onClose])
 
-const handleLogin = () => {
+const handleLogin = async () => {
   if (!email || !password) {
     setError("Email and password required")
     return
@@ -23,11 +30,32 @@ const handleLogin = () => {
   setError("")
   setLoading(true)
 
-  setTimeout(() => {
-    setLoading(false)
-    alert("Login successful (API later)")
+  try {
+    const response = await fetch("http://localhost:8080/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    })
+
+    if (!response.ok) {
+      throw new Error("Invalid email or password")
+    }
+
+    const data = await response.json()
+
+    //store jwt token
+    localStorage.setItem("token", data.token)
+    setIsAuthenticated(true)
+    //close modal
     onClose()
-  }, 1200)
+    navigate("/main")
+  } catch (err) {
+    setError(err.message)
+  } finally {
+    setLoading(false)
+  }
 }
 
   return (
